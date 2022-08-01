@@ -33,12 +33,10 @@
                         {
                             <tr>
                                 <td>
-                                    <div class="w3-container">
+                                    <div class="w3-container" onclick="showCardDetails('@(item.Id)')">
                                         <div class="w3-card-4 w3-dark-grey">
-
                                             <div class="w3-container w3-center">
                                                 <h3>@item.Title</h3>
-
                                                 <div class="w3-section">
                                                     <h5>@item.Description</h5>
                                                 </div>
@@ -54,4 +52,9 @@
         }
     </div>
 </div>
-
+<script src='https://cdnjs.cloudflare.com/ajax/libs/dragula/$VERSION/dragula.min.js'></script>
+<script>
+    function showCardDetails(id) {
+        window.location.href = '/Card/Details/' + id;
+    }
+</script>

@@ -10,6 +10,7 @@ namespace moana_feladat.Controllers
     {
         string Baseurl = "http://79.172.201.168/";
         private readonly ILogger<HomeController> _logger;
+        List<Card> cards = new List<Card>();
 
         public HomeController(ILogger<HomeController> logger)
         {
@@ -18,8 +19,7 @@ namespace moana_feladat.Controllers
 
         public async Task<ActionResult> Index()
         {
-            
-            List<Card> cards = new List<Card>();
+
             using (var client = new HttpClient())
             {
                 //Passing service base url
@@ -56,6 +56,11 @@ namespace moana_feladat.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        public ActionResult Details(string id)
+        {
+            return Redirect("/Card/Details/"+id);
         }
     }
 }

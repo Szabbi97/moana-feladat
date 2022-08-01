@@ -396,4 +396,5 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
-moana-feladat/obj/Debug/net6.0/
+moana-feladat/obj/Debug/
+moana-feladat/.vs/
