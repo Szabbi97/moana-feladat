@@ -8,7 +8,7 @@ namespace moana_feladat.Controllers
     public class UserController : Controller
     {
         string Baseurl = "http://79.172.201.168/";
-        string token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJjM2VjNTk3Yi1hZTBjLTRmMDItYTcxOS02YjA0YmMxZGUzZTciLCJFbWFpbCI6Imtpc2t1dHlhQGtpc2t1dHlhLmh1IiwianRpIjoiNjdlODYyYjQtZWE3Mi00YmVlLThlY2QtNGM3MTljYWFhYzU2IiwibmJmIjoxNjU5MzQwNDY0LCJleHAiOjE2NTkzNDc2NjQsImlhdCI6MTY1OTM0MDQ2NH0.ngD9knRCE8_pB47v4oQIFW_kN5FVPgRk5qlDQLrartg";
+        string token;
 
         private readonly ILogger<UserController> _logger;
 
@@ -33,7 +33,7 @@ namespace moana_feladat.Controllers
                 client.DefaultRequestHeaders.Clear();
                 //Define request data format
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue($"Bearer", token);
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue($"Bearer", Request.Cookies["moanaToken"]);
                 //Sending request to find web api REST service resource GetAllEmployees using HttpClient
                 HttpResponseMessage Res = await client.GetAsync("/Users/GetAll");
                 //Checking the response is successful or not which is sent using HttpClient
@@ -77,6 +77,14 @@ namespace moana_feladat.Controllers
                     var UserResponse = Res.Content.ReadAsStringAsync().Result;
                     //Deserializing the response recieved from web api and storing into the Employee list
                     loginResponse = JsonConvert.DeserializeObject<LoginResponse>(UserResponse);
+
+                    var option = new CookieOptions
+                    {
+                        Expires = loginResponse.ExpiresAt
+                    };
+
+                    Response.Cookies.Append("moanaToken", loginResponse.Token, option);
+
                     return Json(new { status = true, message = "Login Successfull!" });
                 }
                 else
@@ -84,7 +92,6 @@ namespace moana_feladat.Controllers
                     return Json(new { status = false, message = "Login unsuccesful!" });
                 }
             }
-
         }
     }
 }
