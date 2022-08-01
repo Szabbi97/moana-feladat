@@ -11,8 +11,9 @@
             <input type="password" name="password" id="password" placeholder="Password">
           </div>
 
-          <div>
-            <input type="button" value="Login" class="btn btn-primary" onclick="Validate()">
+          <div class="flexcenter">
+            <input type="button" value="Login" class="btn btn-primary margin10" onclick="Validate()">
+            <input type="button" value="Register" class="btn btn-primary margin10" onclick="Register()">
           </div>
 
         </form>
@@ -37,6 +38,32 @@
         console.log(result);
         if (result.status == true) {
           window.location.href = '@Url.Action("Index", "Home")';
+        }
+        else {
+          alert(result.message);
+        }
+      }
+
+    });
+  }
+
+  function Register() {
+
+    $.ajax(
+    {
+      type: "POST",
+      url: '@Url.Action("Register", "User")',
+      data: {
+        email: $('#email').val(),
+        password: $('#password').val()
+      },
+      error: function (result) {
+        alert("There is a Problem, Try Again!");
+      },
+      success: function (result) {
+        console.log(result);
+        if (result.status == true) {
+          alert(result.message);
         }
         else {
           alert(result.message);

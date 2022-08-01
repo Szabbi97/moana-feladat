@@ -21,3 +21,7 @@ body {
     display: flex;
     justify-content: center;
 }
+
+.margin10{
+    margin:10px;
+}

@@ -48,7 +48,11 @@ namespace moana_feladat.Controllers
                 return View(users);
             }
         }
-
+        /// <summary>
+        /// Validating a login on page
+        /// </summary>
+        /// <param name="loginModel"></param>
+        /// <returns></returns>
         public async Task<ActionResult> Validate(LoginModel loginModel)
         {
             using (var client = new HttpClient())
@@ -90,6 +94,43 @@ namespace moana_feladat.Controllers
                 else
                 {
                     return Json(new { status = false, message = "Login unsuccesful!" });
+                }
+            }
+        }
+        /// <summary>
+        /// Registering a user
+        /// </summary>
+        /// <param name="loginModel"></param>
+        /// <returns></returns>
+        public async Task<ActionResult> Register(LoginModel loginModel)
+        {
+            using (var client = new HttpClient())
+            {
+                LoginResponse loginResponse = new LoginResponse();
+                //Passing service base url
+                client.BaseAddress = new Uri(Baseurl);
+                client.DefaultRequestHeaders.Clear();
+                //Define request data format
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                //Sending request to find web api REST service resource GetAllEmployees using HttpClient
+                object data = new
+                {
+                    email = loginModel.Email,
+                    password = loginModel.Password
+                };
+                var myContent = JsonConvert.SerializeObject(data);
+                var buffer = System.Text.Encoding.UTF8.GetBytes(myContent);
+                var byteContent = new ByteArrayContent(buffer);
+                byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                HttpResponseMessage Res = await client.PostAsync("/Authentication/SignUp", byteContent);
+                //Checking the response is successful or not which is sent using HttpClient
+                if (Res.IsSuccessStatusCode)
+                {
+                    return Json(new { status = true, message = "Registration Successfull!" });
+                }
+                else
+                {
+                    return Json(new { status = false, message = "Registration unsuccesful!" });
                 }
             }
         }
