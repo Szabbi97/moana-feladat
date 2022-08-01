@@ -1,0 +1,49 @@
+﻿@{
+    ViewData["Title"] = "Login Page";
+}
+  <div class="flexcenter">
+        <form>
+          <div>
+            <input type="text" name="email" id="email" placeholder="Email">
+          </div>
+
+          <div >
+            <input type="password" name="password" id="password" placeholder="Password">
+          </div>
+
+          <div>
+            <input type="button" value="Login" class="btn btn-primary" onclick="Validate()">
+          </div>
+
+        </form>
+  </div>
+
+  <script>
+
+  function Validate() {
+
+    $.ajax(
+    {
+      type: "POST",
+      url: '@Url.Action("Validate", "User")',
+      data: {
+        email: $('#email').val(),
+        password: $('#password').val()
+      },
+      error: function (result) {
+        alert("There is a Problem, Try Again!");
+      },
+      success: function (result) {
+        console.log(result);
+        if (result.status == true) {
+          window.location.href = '@Url.Action("Index", "Home")';
+        }
+        else {
+          alert(result.message);
+        }
+      }
+
+    });
+  }
+
+</script>
