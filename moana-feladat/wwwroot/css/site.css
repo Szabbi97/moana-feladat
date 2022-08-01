@@ -25,3 +25,8 @@ body {
 .margin10{
     margin:10px;
 }
+
+.card-container {
+    background-color: lightgray;
+    margin: 10px;
+}

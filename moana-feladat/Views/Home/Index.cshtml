@@ -1,8 +1,57 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model IEnumerable<moana_feladat.Models.Card>
+
+@{
+    ViewData["Title"] = "Kanban";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container">
+    <div class="row">
+        @for (var i = 0; i < 4; i++)
+        {
+            <table id="@("table"+i)" class="col-lg card-container">
+                <caption style="caption-side:top; display:flex; justify-content:center;">
+                    @switch (i)
+                    {
+                        case 0:
+                            <h2>Pending</h2>
+                            break;
+                        case 1:
+                            <h2>In progress</h2>
+                            break;
+                        case 2:
+                            <h2>Blocked</h2>
+                            break;
+                        case 3:
+                            <h2>Done</h2>
+                            break;
+                    }
+                </caption>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        @if (item.Status == i)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="w3-container">
+                                        <div class="w3-card-4 w3-dark-grey">
+
+                                            <div class="w3-container w3-center">
+                                                <h3>@item.Title</h3>
+
+                                                <div class="w3-section">
+                                                    <h5>@item.Description</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
 </div>
+
