@@ -88,6 +88,7 @@ namespace moana_feladat.Controllers
                     };
 
                     Response.Cookies.Append("moanaToken", loginResponse.Token, option);
+                    Response.Cookies.Append("moanaUserId", loginResponse.UserId, option);
 
                     return Json(new { status = true, message = "Login Successfull!" });
                 }

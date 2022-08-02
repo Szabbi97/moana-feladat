@@ -5,56 +5,97 @@
 }
 
 <div class="container">
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Add Card</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="form-group">
+                            <label>Title</label>
+                            <input id="modalTitle" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <input id="modalDescription" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="addCard()">Add</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
     <div class="row">
-        @for (var i = 0; i < 4; i++)
-        {
-            <table id="@("table"+i)" class="col-lg card-container">
-                <caption style="caption-side:top; display:flex; justify-content:center;">
-                    @switch (i)
-                    {
-                        case 0:
-                            <h2>Pending</h2>
-                            break;
-                        case 1:
-                            <h2>In progress</h2>
-                            break;
-                        case 2:
-                            <h2>Blocked</h2>
-                            break;
-                        case 3:
-                            <h2>Done</h2>
-                            break;
-                    }
-                </caption>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
-                        @if (item.Status == i)
-                        {
-                            <tr>
-                                <td>
-                                    <div class="w3-container" onclick="showCardDetails('@(item.Id)')">
-                                        <div class="w3-card-4 w3-dark-grey">
-                                            <div class="w3-container w3-center">
-                                                <h3>@item.Title</h3>
-                                                <div class="w3-section">
-                                                    <h5>@item.Description</h5>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        }
-                    }
-                </tbody>
-            </table>
-        }
+        <div class="col-sm-2">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">Add card</button>
+        </div>
+        <div class="col">
+        </div>
+    </div>
+    <div class="row" id="kanbanDiv">
     </div>
 </div>
-<script src='https://cdnjs.cloudflare.com/ajax/libs/dragula/$VERSION/dragula.min.js'></script>
+
+
+
+<script src='https://bevacqua.github.io/dragula/dist/dragula.js'></script>
 <script>
+    function loadTables() {
+        $.ajax({
+            url: '/Card/GetAll',
+            type: "POST",
+            dataType: "html",
+            data: "asd",
+            success: function(data) {
+                //Fill div with results
+                $("#kanbanDiv").html(data);
+                dragula([document.getElementById('tbody0'), document.getElementById('tbody1')]);
+                dragula([document.getElementById('tbody0'), document.getElementById('tbody2')]);
+                dragula([document.getElementById('tbody0'), document.getElementById('tbody3')]);
+            },
+            error: function() { alert('error'); }
+        });
+    }
+    $(document).ready(function() {
+        loadTables();
+    });
     function showCardDetails(id) {
         window.location.href = '/Card/Details/' + id;
     }
+
+
+
+    function addCard() {
+        $.ajax(
+            {
+                type: "POST",
+                url: '@Url.Action("Add", "Card")',
+                data: {
+                    title: $("#modalTitle").val(),
+                    description: $("#modalDescription").val()
+                },
+                error: function(result) {
+                    alert("There is a Problem, Try Again!");
+                },
+                success: function(result) {
+                    loadTables();
+                    $('.close').click();
+                    $("#modalTitle").val("");
+                    $("#modalDescription").val("");
+
+                }
+            });
+    }
+
+
 </script>

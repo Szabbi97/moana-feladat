@@ -1,0 +1,46 @@
+﻿@model IEnumerable<moana_feladat.Models.Card>
+
+@for (var i = 0; i < 4; i++)
+{
+    <table id="@("table"+i)" class="col-lg card-container">
+        <caption style="caption-side:top; display:flex; justify-content:center;">
+            @switch (i)
+            {
+                case 0:
+                    <h2>Pending</h2>
+                    break;
+                case 1:
+                    <h2>In progress</h2>
+                    break;
+                case 2:
+                    <h2>Blocked</h2>
+                    break;
+                case 3:
+                    <h2>Done</h2>
+                    break;
+            }
+        </caption>
+        <tbody id="@("tbody"+i)">
+            @foreach (var item in Model)
+            {
+                @if (item.Status == i)
+                {
+                    <tr>
+                        <td style="padding:10px;">
+                            <div class="w3-container" onclick="showCardDetails('@(item.Id)')">
+                                <div class="w3-card-4 w3-dark-grey">
+                                    <div class="w3-container w3-center">
+                                        <h3>@item.Title</h3>
+                                        <div class="w3-section">
+                                            <h5>@item.Description</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+}

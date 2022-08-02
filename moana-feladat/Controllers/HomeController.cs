@@ -43,7 +43,7 @@ namespace moana_feladat.Controllers
                     cards = JsonConvert.DeserializeObject<List<Card>>(CardResponse);
                 }
                 //returning the employee list to view
-                return View(cards);
+                return View();
             }
         }
 

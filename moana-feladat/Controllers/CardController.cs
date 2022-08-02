@@ -9,7 +9,38 @@ namespace moana_feladat.Controllers
     public class CardController : Controller
     {
         string Baseurl = "http://79.172.201.168/";
-        private readonly ILogger<HomeController> _logger;
+
+
+        [HttpPost]
+        public async Task<ActionResult> Add(Card inputCard)
+        {
+            using (var client = new HttpClient())
+            {
+                //Passing service base url
+                client.BaseAddress = new Uri(Baseurl);
+                client.DefaultRequestHeaders.Clear();
+                //Define request data format
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue($"Bearer", Request.Cookies["moanaToken"]);
+                //Sending request to find web api REST service resource GetAllEmployees using HttpClient
+                object data = new
+                {
+                    title = inputCard.Title,
+                    description = inputCard.Description
+                };
+                var myContent = JsonConvert.SerializeObject(data);
+                var buffer = Encoding.UTF8.GetBytes(myContent);
+                var byteContent = new ByteArrayContent(buffer);
+                byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                HttpResponseMessage Res = await client.PostAsync("Cards/Add", byteContent);
+                //Checking the response is successful or not which is sent using HttpClient
+                if (Res.IsSuccessStatusCode)
+                {
+                    return Json(new { status = true, message = "Adding Successfull!" });
+                }
+                return null;
+            }
+        }
         public async Task<ActionResult> Details(string id)
         {
             using (var client = new HttpClient())
@@ -129,6 +160,37 @@ namespace moana_feladat.Controllers
                     return Redirect("/Home/Index/");
                 }
                 return null;
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> GetAll(string szoveg)
+        {
+            using (var client = new HttpClient())
+            {
+                List<Card> cards = new List<Card>();
+                //Passing service base url
+                client.BaseAddress = new Uri(Baseurl);
+                client.DefaultRequestHeaders.Clear();
+                //Define request data format
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                if (Request.Cookies["moanaToken"] == null)
+                {
+                    return Redirect("/User/Login");
+                }
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue($"Bearer", Request.Cookies["moanaToken"]);
+                //Sending request to find web api REST service resource GetAllEmployees using HttpClient
+                HttpResponseMessage Res = await client.GetAsync("/Cards/GetAll");
+                //Checking the response is successful or not which is sent using HttpClient
+                if (Res.IsSuccessStatusCode)
+                {
+                    //Storing the response details recieved from web api
+                    var CardResponse = Res.Content.ReadAsStringAsync().Result;
+                    //Deserializing the response recieved from web api and storing into the Employee list
+                    cards = JsonConvert.DeserializeObject<List<Card>>(CardResponse);
+                }
+                //returning the employee list to view
+                return PartialView("~/Views/Home/_Kanban.cshtml", cards);
             }
         }
     }
